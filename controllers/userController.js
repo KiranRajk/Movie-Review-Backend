@@ -51,9 +51,9 @@ export const signIn = async (req, res) =>{
         if(!ispasswordMatch) {
             return res.send("Password not match")
         }
-        const token  = generateToken(email);
+        const token  = generateToken(user._id);
         res.cookie("token", token);
-        res.send("Logged in")
+       res.status(200).json({message : "Logged In", token})
     } catch (error) {
         console.log(error, "User login error");
         res.status(500).send("Server error")
@@ -81,9 +81,11 @@ const calculateRating = (reviews) => {
 
 export const MovieDataById = async (req, res) =>{
     try {
+        console.log('hitted');
         const movieId = req.params.id;
+        console.log(`Fetching movie with id : ${movieId}`);
         const movie = await Movie.findById(movieId).populate('reviews');
-
+       
         if (!movie) {
             return res.status(404).json({ message: "Movie not found" });
         }
@@ -109,7 +111,7 @@ export const MovieDataById = async (req, res) =>{
 }
 
 
-const addReview = async(req, res) => {
+export const addReview = async(req, res) => {
     try {
         const {movieId, rating, comment} = req.body;
         const userId = req.user._id;
@@ -135,6 +137,6 @@ const addReview = async(req, res) => {
           res.status(200).json(savedReview)
     } catch (error) {
         console.error(error.message);
-    res.status(500).json({ message: "Server Error. Unable to add review at this moment" });
+        res.status(500).json({ message: "Server Error. Unable to add review at this moment" });
     }
 }

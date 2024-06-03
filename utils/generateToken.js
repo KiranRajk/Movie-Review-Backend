@@ -5,6 +5,6 @@ config()
 
 const secretKey = process.env.JWT_SECRET;
 
-export const generateToken = (email) =>{
-    return jsonwebToken.sign({data: email}, secretKey, {expiresIn: '1d'});
+export const generateToken = (userId) =>{
+    return jsonwebToken.sign({id: userId}, secretKey, {expiresIn: '1d'});
 }

@@ -53,7 +53,7 @@ export const signIn = async (req, res) =>{
         }
         const token  = generateToken(user._id);
         res.cookie("token", token);
-       res.status(200).json({message : "Logged In", token})
+       res.status(200).json({message : "Logged In", token, user})
     } catch (error) {
         console.log(error, "User login error");
         res.status(500).send("Server error")

@@ -1,17 +1,28 @@
+import { cloudinaryInstance } from "../config/cloudinary.js";
 import Movie from "../models/movieModels.js";
 import Review from "../models/reviewModel.js";
 import User from "../models/userModel.js";
 
 export const createMovie = async(req, res) => {
+    const {title, year, genre, director, description } = req.body;
+    const imageFile = req.file;
     try {
+        console.log("Hitted");
+        if(!req.file) {
+            return res.send("File is not available");
+        }
+        // Upload image to Cloudinary
+        const result = await cloudinaryInstance.uploader.upload(imageFile.path);
+
         const newMovie = new Movie({
-            title: "The Godfather",
-            year: 1972,
-            genre: "Crime",
-            director: "Francis Ford Coppola",
-            description : "The Godfather is a 1972 American epic gangster film[2] directed by Francis Ford Coppola, who co-wrote the screenplay with Mario Puzo, based on Puzo's best-selling 1969 novel of the same title.",
-            image: "The godfather.jpg"
-        })
+            title,
+            director,
+            year,
+            description,
+            genre,
+            image : result.secure_url
+        });
+
         
        const savedMovie = await newMovie.save();
         res.status(201).json(savedMovie)

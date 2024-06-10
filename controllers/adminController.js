@@ -25,7 +25,7 @@ export const createMovie = async(req, res) => {
 
         
        const savedMovie = await newMovie.save();
-        res.status(201).json(savedMovie)
+        res.status(201).json({message : "Movie Saved Successfully!", savedMovie})
         console.log("Movie Saved Successfully!");
     } catch (error) {
         res.status(500).json({ message: "Error Saving Movie", error: error.message });

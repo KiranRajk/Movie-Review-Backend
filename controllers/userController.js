@@ -7,7 +7,6 @@ import Review from '../models/reviewModel.js';
 
 export const signUp = async (req, res) => {
     try {
-        console.log(req.body);
         const {name, email, password} = req.body;
         const userExist = await User.findOne({email});
         if(userExist) {
@@ -29,7 +28,7 @@ export const signUp = async (req, res) => {
         }
         // const token = generateToken(email)
         // res.cookie("token", token)
-        res.status(201).send('User Created')
+        res.status(201).json({message: "User Created"})
 
     } catch (error) {
         console.log(error, "User creation error");
@@ -43,7 +42,7 @@ export const signIn = async (req, res) =>{
         const user = await User.findOne({email});
 
         if(!user) {
-            return res.send("User not found");
+            return res.status(404).send("User not found");
         }
         
         const ispasswordMatch = await bcrypt.compare(password, user.hashPassword)
@@ -51,9 +50,9 @@ export const signIn = async (req, res) =>{
         if(!ispasswordMatch) {
             return res.send("Password not match")
         }
-        const token  = generateToken(user._id);
+        const token  = generateToken(user);
         res.cookie("token", token);
-       res.status(200).json({message : "Logged In", token, user})
+       res.status(200).json({message : "Logged In", token: token, isAdmin: user.isAdmin, userDetails: user})
     } catch (error) {
         console.log(error, "User login error");
         res.status(500).send("Server error")
@@ -106,7 +105,7 @@ export const MovieDataById = async (req, res) =>{
 
         res.status(200).json(movieData)
     } catch (error) {
-        res.status(500).json("Server Error. Movie data cant b get at this moment")
+        res.status(500).json("Server Error. Movie data cant be fetched at the moment")
     }
 }
 
@@ -134,7 +133,7 @@ export const addReview = async(req, res) => {
           movie.reviews.push(savedReview._id);
           await movie.save();
 
-          res.status(200).json(savedReview)
+          res.status(200).json({message : "New Review added", savedReview })
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ message: "Server Error. Unable to add review at this moment" });

@@ -8,7 +8,7 @@ const userRouter = express.Router();
 // userRouter.post('/signIn', signIn)
 
 userRouter.get('/getMovieData' , verifyToken, MovieData)
-userRouter.get('/getMovieById/:id', verifyToken,MovieDataById)
+userRouter.get('/getMovieById', verifyToken,MovieDataById)
 
 userRouter.post('/addReview', verifyToken, addReview)
 

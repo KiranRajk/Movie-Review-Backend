@@ -6,14 +6,17 @@ import User from "../models/userModel.js";
 export const createMovie = async(req, res) => {
     const {title, year, genre, director, description } = req.body;
     const imageFile = req.file;
+    console.log(imageFile);
     try {
         console.log("Hitted");
         if(!req.file) {
+            console.log('file not found');
             return res.send("File is not available");
         }
         // Upload image to Cloudinary
+        console.log('going to upload image');
         const result = await cloudinaryInstance.uploader.upload(imageFile.path);
-
+        console.log('uploadimage');
         const newMovie = new Movie({
             title,
             director,
@@ -22,6 +25,7 @@ export const createMovie = async(req, res) => {
             genre,
             image : result.secure_url
         });
+        console.log('newmovieis created in');
 
         
        const savedMovie = await newMovie.save();
@@ -50,7 +54,7 @@ export const getDashboard = async(req, res) => {
                 $lookup: {
                     from: 'reviews',
                     localField: '_id',
-                    foreignField: 'userId',
+                    foreignField: 'user',
                     as: 'reviews'
                 }
             }
